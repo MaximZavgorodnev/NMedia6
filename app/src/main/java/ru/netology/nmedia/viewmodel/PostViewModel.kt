@@ -33,19 +33,32 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         loadPosts()
     }
 
+//    fun loadPosts() {
+//        thread {
+//            // Начинаем загрузку
+//            _data.postValue(FeedModel(loading = true))
+//            try {
+//                // Данные успешно получены
+//                val posts = repository.getAll()
+//                FeedModel(posts = posts, empty = posts.isEmpty())
+//            } catch (e: IOException) {
+//                // Получена ошибка
+//                FeedModel(error = true)
+//            }.also(_data::postValue)
+//        }
+//    }
+
     fun loadPosts() {
-        thread {
-            // Начинаем загрузку
-            _data.postValue(FeedModel(loading = true))
-            try {
-                // Данные успешно получены
-                val posts = repository.getAll()
-                FeedModel(posts = posts, empty = posts.isEmpty())
-            } catch (e: IOException) {
-                // Получена ошибка
-                FeedModel(error = true)
-            }.also(_data::postValue)
-        }
+        _data.value = FeedModel(loading = true)
+        repository.getAllAsync(object : PostRepository.GetAllCallback {
+            override fun onSuccess(posts: List<Post>) {
+                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+            }
+
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
     }
 
     fun save() {
@@ -71,27 +84,36 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long) {
-        _data.postValue(
-            _data.value?.copy(posts = _data.value?.posts.orEmpty()
-                .map { if (it.id != id) it else it.copy(
-                    likedByMe = !it.likedByMe,
-                    likes = it.likes + 1
-                ) }
-            )
-        )
-        thread { repository.likeById(id) }
+//        _data.postValue(
+//            _data.value?.copy(posts = _data.value?.posts.orEmpty()
+//                .map { if (it.id != id) it else it.copy(
+//                    likedByMe = !it.likedByMe,
+//                    likes = it.likes + 1
+//                ) }
+//            )
+//        )
+        thread {
+            val updated = repository.likeById(id)
+            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
+            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+
+        }
     }
 
     fun disLikeById(id: Long) {
-        _data.postValue(
-            _data.value?.copy(posts = _data.value?.posts.orEmpty()
-                .map { if (it.id != id) it else it.copy(
-                    likedByMe = !it.likedByMe,
-                    likes = it.likes - 1
-                ) }
-            )
-        )
-        thread { repository.disLikeById(id) }
+//        _data.postValue(
+//            _data.value?.copy(posts = _data.value?.posts.orEmpty()
+//                .map { if (it.id != id) it else it.copy(
+//                    likedByMe = !it.likedByMe,
+//                    likes = it.likes - 1
+//                ) }
+//            )
+//        )
+        thread {
+            val updated = repository.disLikeById(id)
+            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
+            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+        }
     }
 
     fun removeById(id: Long) {
