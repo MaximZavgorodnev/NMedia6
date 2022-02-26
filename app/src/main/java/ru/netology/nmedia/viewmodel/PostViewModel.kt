@@ -53,7 +53,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
             }
 
-            override fun onError(e: Exception) {
+            override fun onError(t: Throwable) {
                 _data.postValue(FeedModel(error = true))
             }
         })
