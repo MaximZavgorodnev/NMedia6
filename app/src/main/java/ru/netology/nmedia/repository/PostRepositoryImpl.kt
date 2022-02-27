@@ -47,32 +47,35 @@ class PostRepositoryImpl: PostRepository {
         PostsApi.retrofitService.getAll().enqueue(object : retrofit2.Callback<List<Post>> {
             override fun onResponse(call: retrofit2.Call<List<Post>>, response: retrofit2.Response<List<Post>>) {
                 if (!response.isSuccessful) {
-                    when (response.message().toInt()){
-                        in 100..199 -> {callback.onError(java.lang.RuntimeException(response.message()))
-                        println(response.message())
-                        }
-                        in 300..399 -> {callback.onError(java.lang.RuntimeException(response.message()))
-                            println(response.message())
-                        }
-                        in 400..499 -> {callback.onError(java.lang.RuntimeException(response.message()))
-                            println(response.message())
-                        }
-                        else -> {
-                            callback.onError(java.lang.RuntimeException(response.message()))
-                            println(response.message())
-                        }
-
-                    }
+//                    when (response.code()){
+//                        in 100..199 -> {callback.onError(java.lang.RuntimeException(response.message()),)
+//                        println(response.code())
+//                        }
+//                        in 300..399 -> {callback.onError(java.lang.RuntimeException(response.message()),)
+//                            println(response.code())
+//                        }
+//                        in 400..499 -> {callback.onError(java.lang.RuntimeException(response.message()),)
+//                            println(response.code())
+//                        }
+//                        else -> {
+//                            callback.onError(java.lang.RuntimeException(response.message()),)
+//                            println(response.code())
+//                        }
 //
-//                    callback.onError(java.lang.RuntimeException(response.message()))
-//                    return
+//                    }
+//
+                    callback.onError(java.lang.RuntimeException(response.message()), response.code())
+
+                    return
                 }
+                println(response.message())
 
                 callback.onSuccess(response.body() ?: throw java.lang.RuntimeException("body is null"))
             }
 
             override fun onFailure(call: retrofit2.Call<List<Post>>, t: Throwable) {
-                callback.onError(t)
+                val error = 0
+                callback.onError(t,error)
             }
         })
     }

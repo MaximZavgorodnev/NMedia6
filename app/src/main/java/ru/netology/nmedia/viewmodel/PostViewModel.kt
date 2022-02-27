@@ -1,7 +1,11 @@
 package ru.netology.nmedia.viewmodel
 
 import android.app.Application
+import android.view.View
 import androidx.lifecycle.*
+import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.R
+import ru.netology.nmedia.activity.FeedFragment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -53,8 +57,25 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
             }
 
-            override fun onError(t: Throwable) {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(t: Throwable, erorrCode: Int) {
+                if (erorrCode != 0 ){
+                    when (erorrCode) {
+                        in 500..599 -> {
+                            val snack = Snackbar.make(
+                                it,
+                                "This is a simple Snackbar",
+                                Snackbar.LENGTH_LONG
+                            )
+                            snack.setAction("DISMISS", View.OnClickListener {
+                                // executed when DISMISS is clicked
+                                System.out.println("Snackbar Set Action - OnClick.")
+                            })
+                            snack.show()
+                        }
+                        else -> return
+                    }
+                } else _data.postValue(FeedModel(error = true))
+
             }
         })
     }
