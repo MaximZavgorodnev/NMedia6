@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -58,6 +59,11 @@ class FeedFragment : Fragment() {
             binding.progress.isVisible = state.loading
             binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
+            if (state.systemError){
+                if (container != null) {
+                    goError(container)
+                }
+            }
         })
 
         binding.retryButton.setOnClickListener {
@@ -76,5 +82,19 @@ class FeedFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    fun goError(view: View){
+        val text = viewModel.notificationText
+        val snack = Snackbar.make(
+            view, text,
+            Snackbar.LENGTH_INDEFINITE
+        )
+        snack.setAction("Повторить?", View.OnClickListener {
+            // executed when DISMISS is clicked
+            viewModel.retry()
+            System.out.println("Snackbar Set Action - OnClick.")
+        })
+        snack.show()
     }
 }

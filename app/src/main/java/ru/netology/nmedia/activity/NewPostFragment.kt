@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg
@@ -32,6 +33,13 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
+        viewModel.data.observe(viewLifecycleOwner, { state ->
+            if (state.systemError){
+                if (container != null) {
+                    goError(container)
+                }
+            }
+        })
 
         arguments?.textArg
             ?.let(binding.edit::setText)
@@ -45,6 +53,23 @@ class NewPostFragment : Fragment() {
             viewModel.loadPosts()
             findNavController().navigateUp()
         }
+
+
+
         return binding.root
+    }
+
+    fun goError(view: View){
+        val text = viewModel.notificationText
+        val snack = Snackbar.make(
+            view, text,
+            Snackbar.LENGTH_INDEFINITE
+        )
+        snack.setAction("Повторить?", View.OnClickListener {
+            // executed when DISMISS is clicked
+            viewModel.retry()
+            System.out.println("Snackbar Set Action - OnClick.")
+        })
+        snack.show()
     }
 }

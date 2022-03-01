@@ -20,13 +20,15 @@ interface PostRepository {
         fun onError(t: Throwable, erorrCode: Int)
     }
 
-    interface LikeCallback {
-        fun onSuccess(id: Long, post: Post)
-        fun onError(e: Exception)
-    }
-
     interface SaveRemoveCallback {
         fun onSuccess()
-        fun onError(e: Exception)
+        fun onError(t: Throwable, erorrCode: Int)
     }
+
+    interface LikeCallback {
+        fun onSuccess(id: Long, post: Post)
+        fun onError(t: Throwable, erorrCode: Int)
+    }
+
+
 }

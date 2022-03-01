@@ -1,11 +1,7 @@
 package ru.netology.nmedia.viewmodel
 
 import android.app.Application
-import android.view.View
 import androidx.lifecycle.*
-import com.google.android.material.snackbar.Snackbar
-import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.FeedFragment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -30,6 +26,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
+    var notificationText = "NULL"
+
+    var lastAction: ActionType? = null
+    var lastId = 0L
 
     init {
         loadPosts()
@@ -52,25 +52,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadPosts() {
         _data.value = FeedModel(loading = true)
+        lastAction = ActionType.LOAD
         repository.getAllAsync(object : PostRepository.GetAllCallback {
             override fun onSuccess(posts: List<Post>) {
                 _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
             }
 
-            override fun onError(t: Throwable, erorrCode: Int) {
-                if (erorrCode != 0 ){
-                    when (erorrCode) {
+            override fun onError(t: Throwable, errorCode: Int) {
+                if (errorCode != 0 ){
+                    when (errorCode) {
                         in 500..599 -> {
-                            val snack = Snackbar.make(
-                                it,
-                                "This is a simple Snackbar",
-                                Snackbar.LENGTH_LONG
-                            )
-                            snack.setAction("DISMISS", View.OnClickListener {
-                                // executed when DISMISS is clicked
-                                System.out.println("Snackbar Set Action - OnClick.")
-                            })
-                            snack.show()
+                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
+                            _data.postValue(FeedModel(systemError = true))
                         }
                         else -> return
                     }
@@ -88,14 +81,23 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //            }
 //        }
 //        edited.value = empty
+        lastAction = ActionType.SAVE
         val post = edited.value
         repository.saveAsync( post!!, object : PostRepository.SaveRemoveCallback {
             override fun onSuccess() {
                 _postCreated.postValue(Unit)
             }
 
-            override fun onError(e: Exception) {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(t: Throwable, errorCode: Int) {
+                if (errorCode != 0 ){
+                    when (errorCode) {
+                        in 500..599 -> {
+                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
+                            _data.postValue(FeedModel(systemError = true))
+                        }
+                        else -> return
+                    }
+                } else _data.postValue(FeedModel(error = true))
             }
         })
         edited.value = empty
@@ -121,14 +123,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
 //
 //        }
+        lastAction = ActionType.LIKE
+        lastId = id
         repository.likeByIdAsync(id, object : PostRepository.LikeCallback {
             override fun onSuccess(id: Long, post: Post) {
                 val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
             _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
             }
 
-            override fun onError(e: Exception) {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(t: Throwable, errorCode: Int) {
+                if (errorCode != 0 ){
+                    when (errorCode) {
+                        in 500..599 -> {
+                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
+                            _data.postValue(FeedModel(systemError = true))
+                        }
+                        else -> return
+                    }
+                } else _data.postValue(FeedModel(error = true))
             }
         })
     }
@@ -139,15 +151,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
 //            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
 //        }
-
+        lastAction = ActionType.DISLIKE
+        lastId = id
         repository.disLikeByIdAsync(id, object : PostRepository.LikeCallback {
             override fun onSuccess(id: Long, post: Post) {
                 val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
                 _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
             }
 
-            override fun onError(e: Exception) {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(t: Throwable, errorCode: Int) {
+                if (errorCode != 0 ){
+                    when (errorCode) {
+                        in 500..599 -> {
+                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
+                            _data.postValue(FeedModel(systemError = true))
+                        }
+                        else -> return
+                    }
+                } else _data.postValue(FeedModel(error = true))
             }
         })
 
@@ -169,7 +190,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //            }
 //        }
 
-        val old = _data.value?.posts.orEmpty()
+        lastAction = ActionType.REMOVE
+        lastId = id
+//        val old = _data.value?.posts.orEmpty()
         repository.removeByIdAsync(id, object : PostRepository.SaveRemoveCallback {
             override fun onSuccess() {
                 _data.postValue(
@@ -178,9 +201,52 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
 
-            override fun onError(e: Exception) {
-                _data.postValue(_data.value?.copy(posts = old))
+            override fun onError(t: Throwable, errorCode: Int) {
+                if (errorCode != 0 ){
+                    when (errorCode) {
+                        in 500..599 -> {
+                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
+                            _data.postValue(FeedModel(systemError = true))
+                        }
+                        else -> return
+                    }
+                } else _data.postValue(FeedModel(error = true))
             }
         })
     }
+
+    fun retry(){
+        when (lastAction){
+            ActionType.LOAD -> loadPosts()
+            ActionType.LIKE -> retryLikeById()
+            ActionType.DISLIKE -> retryDisLikeById()
+            ActionType.SAVE -> save()
+            ActionType.REMOVE -> retryRemove()
+
+        }
+    }
+
+    fun retryLikeById(){
+        lastId.let{
+            likeById(it)}
+    }
+
+    fun retryDisLikeById(){
+        lastId.let{
+            disLikeById(it)}
+    }
+
+    fun retryRemove(){
+        lastId.let{
+            removeById(it)
+        }
+    }
+}
+
+enum class ActionType{
+    LIKE,
+    DISLIKE,
+    REMOVE,
+    SAVE,
+    LOAD
 }
