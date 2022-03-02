@@ -33,13 +33,13 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
-        viewModel.data.observe(viewLifecycleOwner, { state ->
-            if (state.systemError){
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            if (state.systemError) {
                 if (container != null) {
                     goError(container)
                 }
             }
-        })
+        }
 
         arguments?.textArg
             ?.let(binding.edit::setText)
@@ -50,9 +50,16 @@ class NewPostFragment : Fragment() {
             AndroidUtils.hideKeyboard(requireView())
         }
         viewModel.postCreated.observe(viewLifecycleOwner) {
+//            if (viewModel.data.value?.systemError == true) {
+//                if (container != null) {
+//                    goError(container)
+//                }
+//            }
             viewModel.loadPosts()
+
             findNavController().navigateUp()
         }
+
 
 
 
@@ -66,10 +73,9 @@ class NewPostFragment : Fragment() {
             Snackbar.LENGTH_INDEFINITE
         )
         snack.setAction("Повторить?", View.OnClickListener {
-            // executed when DISMISS is clicked
             viewModel.retry()
-            System.out.println("Snackbar Set Action - OnClick.")
         })
         snack.show()
+
     }
 }

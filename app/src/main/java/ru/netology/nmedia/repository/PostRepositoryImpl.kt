@@ -12,16 +12,16 @@ import java.util.concurrent.TimeUnit
 
 
 class PostRepositoryImpl: PostRepository {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .build()
-    private val gson = Gson()
-    private val typeToken = object : TypeToken<List<Post>>() {}
-
-    companion object {
-        private const val BASE_URL = "http://10.0.2.2:9999"
-        private val jsonType = "application/json".toMediaType()
-    }
+//    private val client = OkHttpClient.Builder()
+//        .connectTimeout(30, TimeUnit.SECONDS)
+//        .build()
+//    private val gson = Gson()
+//    private val typeToken = object : TypeToken<List<Post>>() {}
+//
+//    companion object {
+//        private const val BASE_URL = "http://10.0.2.2:9999"
+//        private val jsonType = "application/json".toMediaType()
+//    }
 
     override fun getAllAsync(callback: PostRepository.GetAllCallback) {
 //        val request: Request = Request.Builder()
@@ -114,23 +114,35 @@ class PostRepositoryImpl: PostRepository {
 //                }
 //            })
         PostsApi.retrofitService.removeById(id).enqueue(object : retrofit2.Callback<Unit> {
-            override fun onResponse(
-                call: retrofit2.Call<Unit>, response: retrofit2.Response<Unit>
-            ) {
+            override fun onResponse(call: retrofit2.Call<Unit>, response: retrofit2.Response<Unit>) {
                 if (!response.isSuccessful) {
-                    callback.onError(
-                        java.lang.RuntimeException(response.message()),
-                        response.code()
-                    )
+                    callback.onError(java.lang.RuntimeException(response.message()), response.code())
                     return
                 }
                 callback.onSuccess()
             }
 
             override fun onFailure(call: retrofit2.Call<Unit>, t: Throwable) {
-                val error = 0
+                val error = 9
                 callback.onError(t, error)
             }
+
+//            override fun onResponse(call: retrofit2.Call<List<Post>>, response: retrofit2.Response<List<Post>>) {
+//                if (!response.isSuccessful) {
+//                    callback.onError(java.lang.RuntimeException(response.message()), response.code())
+//                    return
+//                }
+//                callback.onSuccess(response.body() ?: throw java.lang.RuntimeException("body is null"))
+//            }
+//
+//            override fun onFailure(call: retrofit2.Call<List<Post>>, t: Throwable) {
+//                val error = 0
+//                callback.onError(t,error)
+//            }
+
+
+
+
         })
 
     }

@@ -86,21 +86,25 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         repository.saveAsync( post!!, object : PostRepository.SaveRemoveCallback {
             override fun onSuccess() {
                 _postCreated.postValue(Unit)
+                edited.value = empty
             }
 
             override fun onError(t: Throwable, errorCode: Int) {
                 if (errorCode != 0 ){
                     when (errorCode) {
-                        in 500..599 -> {
+                        in 400..599 -> {
                             notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
                         }
+//                        in 400..499 -> {
+//                            _postCreated.postValue(Unit)
+//                        }
                         else -> return
                     }
                 } else _data.postValue(FeedModel(error = true))
             }
         })
-        edited.value = empty
+
 
     }
 
@@ -137,10 +141,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                         in 500..599 -> {
                             notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
+                            val posts = _data.value?.posts.orEmpty()
+                            _data.postValue(FeedModel(posts = posts, systemError = true))
                         }
                         else -> return
                     }
-                } else _data.postValue(FeedModel(error = true))
+                }
+                else _data.postValue(FeedModel(error = true))
             }
         })
     }
@@ -165,6 +172,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                         in 500..599 -> {
                             notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
+                            val posts = _data.value?.posts.orEmpty()
+                            _data.postValue(FeedModel(posts = posts, systemError = true))
+
+
                         }
                         else -> return
                     }
@@ -192,12 +203,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
         lastAction = ActionType.REMOVE
         lastId = id
-//        val old = _data.value?.posts.orEmpty()
         repository.removeByIdAsync(id, object : PostRepository.SaveRemoveCallback {
             override fun onSuccess() {
                 _data.postValue(
                 _data.value?.copy(posts = _data.value?.posts.orEmpty()
-                    .filter { it.id != id })
+                    .filter { it.id != id }, systemError = false)
                 )
             }
 
@@ -207,6 +217,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                         in 500..599 -> {
                             notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
+                            val posts = _data.value?.posts.orEmpty()
+                            _data.postValue(FeedModel(posts = posts, systemError = true))
                         }
                         else -> return
                     }
