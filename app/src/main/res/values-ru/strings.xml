@@ -21,4 +21,6 @@
     <string name="notification_user_liked">%1$s поставил лайк посту %2$s</string>
     <string name="channel_remote_name">Уведомления с сервера</string>
     <string name="channel_remote_description">Уведомления с удалённого сервера</string>
+    <string name="server_problems">Что-то пошло нетак. Возможны проблемы с сервером</string>
+    <string name="repeat">ПОВТОРИТЬ?</string>
 </resources>

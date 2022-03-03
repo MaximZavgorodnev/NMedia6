@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringArg
@@ -50,11 +51,6 @@ class NewPostFragment : Fragment() {
             AndroidUtils.hideKeyboard(requireView())
         }
         viewModel.postCreated.observe(viewLifecycleOwner) {
-//            if (viewModel.data.value?.systemError == true) {
-//                if (container != null) {
-//                    goError(container)
-//                }
-//            }
             viewModel.loadPosts()
 
             findNavController().navigateUp()
@@ -67,12 +63,11 @@ class NewPostFragment : Fragment() {
     }
 
     fun goError(view: View){
-        val text = viewModel.notificationText
         val snack = Snackbar.make(
-            view, text,
+            view, R.string.server_problems,
             Snackbar.LENGTH_INDEFINITE
         )
-        snack.setAction("Повторить?", View.OnClickListener {
+        snack.setAction(R.string.repeat, View.OnClickListener {
             viewModel.retry()
         })
         snack.show()

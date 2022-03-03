@@ -2,6 +2,7 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
+import ru.netology.nmedia.R
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -26,8 +27,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
-    var notificationText = "NULL"
-
     var lastAction: ActionType? = null
     var lastId = 0L
 
@@ -62,7 +61,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 if (errorCode != 0 ){
                     when (errorCode) {
                         in 500..599 -> {
-                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
                         }
                         else -> return
@@ -93,7 +91,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 if (errorCode != 0 ){
                     when (errorCode) {
                         in 400..599 -> {
-                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
                         }
 //                        in 400..499 -> {
@@ -139,7 +136,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 if (errorCode != 0 ){
                     when (errorCode) {
                         in 500..599 -> {
-                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
                             val posts = _data.value?.posts.orEmpty()
                             _data.postValue(FeedModel(posts = posts, systemError = true))
@@ -170,7 +166,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 if (errorCode != 0 ){
                     when (errorCode) {
                         in 500..599 -> {
-                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
                             val posts = _data.value?.posts.orEmpty()
                             _data.postValue(FeedModel(posts = posts, systemError = true))
@@ -215,7 +210,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 if (errorCode != 0 ){
                     when (errorCode) {
                         in 500..599 -> {
-                            notificationText = "Что-то пошло нетак. Возможны проблемы с сервером"
                             _data.postValue(FeedModel(systemError = true))
                             val posts = _data.value?.posts.orEmpty()
                             _data.postValue(FeedModel(posts = posts, systemError = true))

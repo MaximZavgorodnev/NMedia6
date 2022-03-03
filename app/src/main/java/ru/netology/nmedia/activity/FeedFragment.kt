@@ -86,14 +86,13 @@ class FeedFragment : Fragment() {
     }
 
     fun goError(view: View){
-        val text = viewModel.notificationText
         val snack = Snackbar.make(
-            view, text,
+            view, R.string.server_problems,
             Snackbar.LENGTH_INDEFINITE
         )
-        snack.setAction("Повторить?", View.OnClickListener {
+        snack.setAction(R.string.repeat, View.OnClickListener {
             viewModel.retry()
-            System.out.println("Snackbar Set Action - OnClick.")
         })
+        snack.show()
     }
 }
