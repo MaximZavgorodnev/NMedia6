@@ -1,8 +1,11 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -41,14 +44,21 @@ class PostViewHolder(
     fun bind(post: Post) {
 
         binding.apply {
-            val url ="${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}"
+            val urlAvatar ="${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}"
             Glide.with(itemView)
-                .load(url)
+                .load(urlAvatar)
                 .error(R.drawable.ic_avatar_loading_error_48)
                 .placeholder(R.drawable.ic_baseline_cruelty_free_48)
                 .timeout(10_000)
                 .circleCrop()
                 .into(avatar)
+
+
+            if (post.attachment != null) {
+                attachment.visibility = View.VISIBLE
+                val urlImage ="${BuildConfig.BASE_URL}/images/${post.attachment!!.url}"
+                Glide.with(itemView).load(urlImage).timeout(10_000).into(attachment)
+            }
 
             author.text = post.author
             published.text = post.published
