@@ -34,7 +34,7 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
-        viewModel.data.observe(viewLifecycleOwner) { state ->
+        viewModel.dataState.observe(viewLifecycleOwner) { state ->
             if (state.systemError) {
                 if (container != null) {
                     goError(container)

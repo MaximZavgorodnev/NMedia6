@@ -4,8 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -42,8 +41,8 @@ class PostViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
-
         binding.apply {
+            attachment.visibility = View.GONE
             val urlAvatar ="${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}"
             Glide.with(itemView)
                 .load(urlAvatar)

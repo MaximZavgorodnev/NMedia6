@@ -9,10 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
-import okhttp3.internal.wait
-import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -57,46 +54,29 @@ class FeedFragment : Fragment() {
             }
         })
         binding.list.adapter = adapter
-
-
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.posts)
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
             binding.progress.isVisible = state.loading
-            binding.errorGroup.isVisible = state.error
-            binding.emptyText.isVisible = state.empty
-            if (state.systemError) {
-                if (container != null) {
-                    goError(container)
-                }
+            binding.swiperefresh.isRefreshing = state.refreshing
+            if (state.error) {
+                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                    .show()
             }
-        }
-
-        binding.retryButton.setOnClickListener {
-            viewModel.loadPosts()
-        }
+        })
+        viewModel.data.observe(viewLifecycleOwner, { state ->
+            adapter.submitList(state.posts)
+            binding.emptyText.isVisible = state.empty
+        })
 
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
-
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.loadPosts()
-            binding.swipeRefresh.isRefreshing = false
+        binding.swiperefresh.setOnRefreshListener {
+            viewModel.refreshPosts()
         }
 
 
         return binding.root
-    }
-
-    fun goError(view: View){
-        val snack = Snackbar.make(
-            view, R.string.server_problems,
-            Snackbar.LENGTH_INDEFINITE
-        )
-        snack.setAction(R.string.repeat, View.OnClickListener {
-            viewModel.retry()
-        })
-        snack.show()
     }
 }

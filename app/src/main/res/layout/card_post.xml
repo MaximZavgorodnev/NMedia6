@@ -90,7 +90,6 @@
             app:layout_constraintTop_toBottomOf="@id/content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
             tools:srcCompat="@sample/posts.json/data/authorAvatar"/>
 
         <androidx.constraintlayout.widget.Barrier
