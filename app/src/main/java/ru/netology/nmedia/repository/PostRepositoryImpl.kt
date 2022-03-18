@@ -1,6 +1,5 @@
 package ru.netology.nmedia.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -17,7 +16,6 @@ import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.error.UnknownError
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 
 class PostRepositoryImpl(private val dao: PostDao): PostRepository {
@@ -56,15 +54,60 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     }
 
     override suspend fun removeById(id: Long) {
-        TODO("Not yet implemented")
+        try {
+            val response = PostsApi.service.removeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+//            val body = response.body() ?: throw ApiError(response.code(), response.message())
+//            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
     override suspend fun likeById(id: Long) {
-        TODO("Not yet implemented")
+//        val post = data.value?.first() ?: throw UnknownError()
+//        dao.insert(PostEntity.fromDto(post))
+
+        try {
+//            val post = data.value?.first() ?: throw UnknownError()
+//            dao.insert(PostEntity.fromDto(post))
+            val response = PostsApi.service.likeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
     override suspend fun disLikeById(id: Long) {
-        TODO("Not yet implemented")
+//        val post = data.value?.first() ?: throw UnknownError()
+//        dao.insert(PostEntity.fromDto(post))
+        try {
+//            val post = data.value?.first() ?: throw UnknownError()
+//            dao.insert(PostEntity.fromDto(post))
+            val response = PostsApi.service.dislikeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
 //    override fun getAllAsync(callback: PostRepository.GetAllCallback) {

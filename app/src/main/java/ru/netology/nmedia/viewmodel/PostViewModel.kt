@@ -135,6 +135,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //        }
         lastAction = ActionType.LIKE
         lastId = id
+        viewModelScope.launch {
+            try {
+                repository.likeById(id)
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
+            }
+        }
+
+
 //        repository.likeByIdAsync(id, object : PostRepository.LikeCallback {
 //            override fun onSuccess(id: Long, post: Post) {
 //                val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
@@ -165,6 +174,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //        }
         lastAction = ActionType.DISLIKE
         lastId = id
+        viewModelScope.launch {
+            try {
+                repository.disLikeById(id)
+
+
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
+            }
+        }
 //        repository.disLikeByIdAsync(id, object : PostRepository.LikeCallback {
 //            override fun onSuccess(id: Long, post: Post) {
 //                val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
@@ -206,6 +224,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 //        }
 
         lastAction = ActionType.REMOVE
+        viewModelScope.launch {
+            try {
+
+               data.value?.copy(posts = data.value?.posts.orEmpty()
+                    .filter { it.id != id })
+                _dataState.value = FeedModelState()
+                repository.removeById(id)
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
+            }
+        }
 //        lastId = id
 //        repository.removeByIdAsync(id, object : PostRepository.SaveRemoveCallback {
 //            override fun onSuccess() {
