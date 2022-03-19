@@ -39,13 +39,14 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
 
     override suspend fun save(post: Post) {
         try {
+            dao.insert(PostEntity.fromDto(post))
             val response = PostsApi.service.save(post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(PostEntity.fromDto(body))
+
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
