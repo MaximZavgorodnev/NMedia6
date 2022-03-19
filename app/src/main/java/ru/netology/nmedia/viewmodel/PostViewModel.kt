@@ -22,7 +22,6 @@ private val empty = Post(
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    // упрощённый вариант
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
     val data: LiveData<FeedModel> = repository.data.map(::FeedModel)
@@ -127,12 +126,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long) {
-//        thread {
-//            val updated = repository.likeById(id)
-//            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
-//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//
-//        }
+
         lastAction = ActionType.LIKE
         lastId = id
         viewModelScope.launch {
@@ -143,7 +137,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-
+//        thread {
+//            val updated = repository.likeById(id)
+//            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
+//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+//
+//        }
 //        repository.likeByIdAsync(id, object : PostRepository.LikeCallback {
 //            override fun onSuccess(id: Long, post: Post) {
 //                val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
@@ -167,11 +166,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun disLikeById(id: Long) {
-//        thread {
-//            val updated = repository.disLikeById(id)
-//            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
-//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//        }
+
         lastAction = ActionType.DISLIKE
         lastId = id
         viewModelScope.launch {
@@ -183,6 +178,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _dataState.value = FeedModelState(error = true)
             }
         }
+    //        thread {
+//            val updated = repository.disLikeById(id)
+//            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
+//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+//        }
 //        repository.disLikeByIdAsync(id, object : PostRepository.LikeCallback {
 //            override fun onSuccess(id: Long, post: Post) {
 //                val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
@@ -226,11 +226,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         lastAction = ActionType.REMOVE
         viewModelScope.launch {
             try {
-
-               data.value?.copy(posts = data.value?.posts.orEmpty()
-                    .filter { it.id != id })
-                _dataState.value = FeedModelState()
                 repository.removeById(id)
+                _dataState.value = FeedModelState()
             } catch (e: Exception) {
                 _dataState.value = FeedModelState(error = true)
             }
@@ -284,6 +281,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             removeById(it)
         }
     }
+
+
+
 }
 
 enum class ActionType{

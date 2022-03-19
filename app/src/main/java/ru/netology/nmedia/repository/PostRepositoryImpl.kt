@@ -59,9 +59,7 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
-//            val body = response.body() ?: throw ApiError(response.code(), response.message())
-//            dao.insert(PostEntity.fromDto(body))
+            dao.removeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -70,17 +68,11 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     }
 
     override suspend fun likeById(id: Long) {
-//        val post = data.value?.first() ?: throw UnknownError()
-//        dao.insert(PostEntity.fromDto(post))
-
         try {
-//            val post = data.value?.first() ?: throw UnknownError()
-//            dao.insert(PostEntity.fromDto(post))
             val response = PostsApi.service.likeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -91,16 +83,11 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     }
 
     override suspend fun disLikeById(id: Long) {
-//        val post = data.value?.first() ?: throw UnknownError()
-//        dao.insert(PostEntity.fromDto(post))
         try {
-//            val post = data.value?.first() ?: throw UnknownError()
-//            dao.insert(PostEntity.fromDto(post))
             val response = PostsApi.service.dislikeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
