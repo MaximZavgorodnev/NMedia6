@@ -23,4 +23,6 @@
     <string name="channel_remote_description">Уведомления с удалённого сервера</string>
     <string name="server_problems">Что-то пошло нетак. Возможны проблемы с сервером</string>
     <string name="repeat">ПОВТОРИТЬ?</string>
+    <string name="error_network">error_network</string>
+    <string name="error_unknown">error_unknown</string>
 </resources>

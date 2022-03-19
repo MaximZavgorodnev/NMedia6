@@ -22,4 +22,6 @@
     <string name="channel_remote_description">Notifications from remote server</string>
     <string name="server_problems">Something went wrong. Server problems</string>
     <string name="repeat">REPEAT?</string>
+    <string name="error_network">error_network</string>
+    <string name="error_unknown">error_unknown</string>
 </resources>
