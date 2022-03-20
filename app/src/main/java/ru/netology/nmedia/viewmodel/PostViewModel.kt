@@ -78,14 +78,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun save() {
-        edited.value?.let {
-            _postCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    repository.save(it)
-                    _dataState.value = FeedModelState()
-                } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
+        if (edited.value?.content != "") {
+            edited.value?.let {
+                _postCreated.value = Unit
+                viewModelScope.launch {
+                    try {
+                        repository.save(it)
+                        _dataState.value = FeedModelState()
+                    } catch (e: Exception) {
+                        _dataState.value = FeedModelState(error = true)
+                    }
                 }
             }
         }
@@ -260,7 +262,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         when (lastAction){
             ActionType.LIKE -> retryLikeById()
             ActionType.DISLIKE -> retryDisLikeById()
-            ActionType.SAVE -> save()
+            ActionType.SAVE -> refreshPosts()
             ActionType.REMOVE -> retryRemove()
 
         }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -34,13 +35,14 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
-            if (state.systemError) {
-                if (container != null) {
-                    goError(container)
-                }
+
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
+            if (state.error) {
+                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.retry_loading) { viewModel.retry() }
+                    .show()
             }
-        }
+        })
 
         arguments?.textArg
             ?.let(binding.edit::setText)
@@ -60,17 +62,5 @@ class NewPostFragment : Fragment() {
 
 
         return binding.root
-    }
-
-    fun goError(view: View){
-        val snack = Snackbar.make(
-            view, R.string.server_problems,
-            Snackbar.LENGTH_INDEFINITE
-        )
-        snack.setAction(R.string.repeat, View.OnClickListener {
-            viewModel.retry()
-        })
-        snack.show()
-
     }
 }
