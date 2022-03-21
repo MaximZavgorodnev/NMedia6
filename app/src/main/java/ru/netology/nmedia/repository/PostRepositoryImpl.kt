@@ -31,9 +31,9 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
                     if (!response.isSuccessful) {
                         memoryPosts.add(post)
                     }
-                    memoryPosts.remove(post)
                     val body = response.body() ?: throw ApiError(response.code(), response.message())
                     dao.insert(PostEntity.fromDto(body))
+                    memoryPosts.remove(post)
                 }
             }
             val response = PostsApi.service.getAll()
