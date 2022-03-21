@@ -36,13 +36,13 @@ class NewPostFragment : Fragment() {
             false
         )
 
-        viewModel.dataState.observe(viewLifecycleOwner, { state ->
-            if (state.error) {
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.retry_loading) { viewModel.retry() }
-                    .show()
-            }
-        })
+//        viewModel.dataState.observe(viewLifecycleOwner, { state ->
+//            if (state.error) {
+//                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_INDEFINITE)
+//                    .setAction(R.string.retry_loading) { viewModel.retry() }
+//                    .show()
+//            }
+//        })
 
         arguments?.textArg
             ?.let(binding.edit::setText)
