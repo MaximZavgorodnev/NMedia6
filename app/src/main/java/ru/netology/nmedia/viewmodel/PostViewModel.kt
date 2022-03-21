@@ -78,6 +78,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun save() {
+        lastAction = ActionType.SAVE
         if (edited.value?.content != "") {
             edited.value?.let {
                 _postCreated.value = Unit

@@ -20,17 +20,29 @@ import java.io.IOException
 
 class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     var nextId: Long = 0L
+    private var again = true
+    private val memoryPosts = mutableListOf<Post>()
     override val data = dao.getAll().map(List<PostEntity>::toDto)
 
     override suspend fun getAll() {
         try {
+            if (memoryPosts.isNotEmpty()){
+                memoryPosts.forEach{post -> val response = PostsApi.service.save(post)
+                    if (!response.isSuccessful) {
+                        memoryPosts.add(post)
+                    }
+                    memoryPosts.remove(post)
+                    val body = response.body() ?: throw ApiError(response.code(), response.message())
+                    dao.insert(PostEntity.fromDto(body))
+                }
+            }
             val response = PostsApi.service.getAll()
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            nextId = (body.size+1).toLong()
+//            nextId = (body.size+1).toLong()
             dao.insert(body.toEntity())
         } catch (e: IOException) {
             throw NetworkError
@@ -41,14 +53,19 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
 
     override suspend fun save(post: Post) {
         try {
+            nextId = dao.insert(PostEntity.fromDto(post))
             val newPost = post.copy(id = nextId)
-            dao.insert(PostEntity.fromDto(newPost))
-            val response = PostsApi.service.save(post)
+            memoryPosts.add(newPost)
+            val response = PostsApi.service.save(newPost)
+
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
+            memoryPosts.clear()
+
+
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
