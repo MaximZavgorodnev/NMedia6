@@ -67,10 +67,8 @@ class FeedFragment : Fragment() {
             adapter.submitList(state.posts)
             binding.emptyText.isVisible = state.empty
         })
-
         viewModel.newerCount.observe(viewLifecycleOwner) { state ->
-            // TODO: just log it, interaction must be in homework
-            println(state)
+                binding.news.visibility = View.VISIBLE
         }
 
         binding.fab.setOnClickListener {

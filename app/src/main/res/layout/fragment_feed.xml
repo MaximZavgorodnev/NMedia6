@@ -47,6 +47,18 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/news"
+        android:layout_marginTop="@dimen/common_spacing"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        app:icon="@drawable/ic_north_24"
+        android:text="@string/news"
+        />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

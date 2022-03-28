@@ -23,7 +23,7 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     var nextId: Long = 0L
     private val memoryPosts = mutableListOf<Post>()
     override val data = dao.getAll()
-        .map(List<PostEntity>::toDto)
+        .map(List<PostEntity>::toDto).asFlow()
         .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
@@ -143,5 +143,8 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
         }
     }
 
+    override suspend fun update(){
+        dao.update()
+    }
 
 }

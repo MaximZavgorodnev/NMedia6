@@ -21,7 +21,9 @@ private val empty = Post(
     authorAvatar = "",
     likedByMe = false,
     likes = 0,
-    published = ""
+    published = "",
+    attachment = null,
+    read = false
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -72,6 +74,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun update() = viewModelScope.launch {
+        try {
+            repository.update()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+
+    }
+
     fun save() {
         lastAction = ActionType.SAVE
         if (edited.value?.content != "") {
@@ -103,7 +114,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long) {
-
         lastAction = ActionType.LIKE
         lastId = id
         viewModelScope.launch {
@@ -116,7 +126,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun disLikeById(id: Long) {
-
         lastAction = ActionType.DISLIKE
         lastId = id
         viewModelScope.launch {
