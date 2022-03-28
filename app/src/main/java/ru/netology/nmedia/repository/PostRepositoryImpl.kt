@@ -51,9 +51,15 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
+            nextId = dao.isSize().toLong()
             val body = response.body() ?: throw ApiError(response.code(), response.message())
+            body.filter { post ->
+                post.id > nextId
+            }
             dao.insert(body.toEntity())
+            if (nextId < 4) {
+                dao.update()
+            }
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -68,8 +74,11 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
+            nextId = dao.isSize().toLong()
             val body = response.body() ?: throw ApiError(response.code(), response.message())
+            body.filter { post ->
+                post.id > nextId
+            }
             dao.insert(body.toEntity())
             emit(body.size)
         }

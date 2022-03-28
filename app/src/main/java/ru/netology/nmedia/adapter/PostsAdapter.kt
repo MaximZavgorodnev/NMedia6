@@ -53,11 +53,11 @@ class PostViewHolder(
                 .into(avatar)
 
 
-//            if (post.attachment != null) {
-//                attachment.visibility = View.VISIBLE
-//                val urlImage ="${BuildConfig.BASE_URL}/images/${post.attachment!!.url}"
-//                Glide.with(itemView).load(urlImage).timeout(10_000).into(attachment)
-//            }
+            if (post.attachment != null) {
+                attachment.visibility = View.VISIBLE
+                val urlImage ="${BuildConfig.BASE_URL}/images/${post.attachment!!.url}"
+                Glide.with(itemView).load(urlImage).timeout(10_000).into(attachment)
+            }
 
             author.text = post.author
             published.text = post.published

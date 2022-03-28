@@ -26,4 +26,7 @@ interface PostDao {
 
     @Query("UPDATE PostEntity SET read = 1")
     suspend fun update()
+
+    @Query("SELECT COUNT(*) FROM PostEntity")
+    fun isSize(): Int
 }

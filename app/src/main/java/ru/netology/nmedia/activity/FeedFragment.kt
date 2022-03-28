@@ -71,6 +71,11 @@ class FeedFragment : Fragment() {
                 binding.news.visibility = View.VISIBLE
         }
 
+        binding.news.setOnClickListener {
+            viewModel.update()
+            binding.news.visibility = View.GONE
+        }
+
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
