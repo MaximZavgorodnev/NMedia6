@@ -68,6 +68,11 @@ class FeedFragment : Fragment() {
             binding.emptyText.isVisible = state.empty
         })
 
+        viewModel.newerCount.observe(viewLifecycleOwner) { state ->
+            // TODO: just log it, interaction must be in homework
+            println(state)
+        }
+
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }

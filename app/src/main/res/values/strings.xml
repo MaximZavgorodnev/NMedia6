@@ -24,4 +24,5 @@
     <string name="repeat">REPEAT?</string>
     <string name="error_network">error_network</string>
     <string name="error_unknown">error_unknown</string>
+    <string name="error_db">error_db</string>
 </resources>
