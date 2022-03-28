@@ -48,23 +48,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
         }
-//        repository.getAllAsync(object : PostRepository.GetAllCallback {
-//            override fun onSuccess(posts: List<Post>) {
-//                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//            }
-//
-//            override fun onError(t: Throwable, errorCode: Int) {
-//                if (errorCode != 0 ){
-//                    when (errorCode) {
-//                        in 500..599 -> {
-//                            _data.postValue(FeedModel(systemError = true))
-//                        }
-//                        else -> return
-//                    }
-//                } else _data.postValue(FeedModel(error = true))
-//
-//            }
-//        })
     }
 
     fun refreshPosts() = viewModelScope.launch {
@@ -93,27 +76,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         edited.value = empty
-
-//        val post = edited.value
-//        repository.saveAsync( post!!, object : PostRepository.SaveRemoveCallback {
-//            override fun onSuccess() {
-//                _postCreated.postValue(Unit)
-//                edited.value = empty
-//            }
-//
-//            override fun onError(t: Throwable, errorCode: Int) {
-//                if (errorCode != 0 ){
-//                    when (errorCode) {
-//                        in 400..599 -> {
-//                            _data.postValue(FeedModel(systemError = true))
-//                        }
-//                        else -> return
-//                    }
-//                } else _data.postValue(FeedModel(error = true))
-//            }
-//        })
-
-
     }
 
     fun edit(post: Post) {
@@ -139,33 +101,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _dataState.value = FeedModelState(error = true)
             }
         }
-
-//        thread {
-//            val updated = repository.likeById(id)
-//            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
-//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//
-//        }
-//        repository.likeByIdAsync(id, object : PostRepository.LikeCallback {
-//            override fun onSuccess(id: Long, post: Post) {
-//                val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
-//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//            }
-//
-//            override fun onError(t: Throwable, errorCode: Int) {
-//                if (errorCode != 0 ){
-//                    when (errorCode) {
-//                        in 500..599 -> {
-//                            _data.postValue(FeedModel(systemError = true))
-//                            val posts = _data.value?.posts.orEmpty()
-//                            _data.postValue(FeedModel(posts = posts, systemError = true))
-//                        }
-//                        else -> return
-//                    }
-//                }
-//                else _data.postValue(FeedModel(error = true))
-//            }
-//        })
     }
 
     fun disLikeById(id: Long) {
@@ -181,51 +116,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _dataState.value = FeedModelState(error = true)
             }
         }
-    //        thread {
-//            val updated = repository.disLikeById(id)
-//            val posts = _data.value?.posts.orEmpty().map{if (it.id == id) updated else it }
-//            _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//        }
-//        repository.disLikeByIdAsync(id, object : PostRepository.LikeCallback {
-//            override fun onSuccess(id: Long, post: Post) {
-//                val posts = _data.value?.posts.orEmpty().map{if (it.id == id) post else it }
-//                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-//            }
-//
-//            override fun onError(t: Throwable, errorCode: Int) {
-//                if (errorCode != 0 ){
-//                    when (errorCode) {
-//                        in 500..599 -> {
-//                            _data.postValue(FeedModel(systemError = true))
-//                            val posts = _data.value?.posts.orEmpty()
-//                            _data.postValue(FeedModel(posts = posts, systemError = true))
-//
-//
-//                        }
-//                        else -> return
-//                    }
-//                } else _data.postValue(FeedModel(error = true))
-//            }
-//        })
-
     }
 
     fun removeById(id: Long) {
-//        thread {
-//            // Оптимистичная модель
-//            val old = _data.value?.posts.orEmpty()
-//            _data.postValue(
-//                _data.value?.copy(posts = _data.value?.posts.orEmpty()
-//                    .filter { it.id != id }
-//                )
-//            )
-//            try {
-//                repository.removeById(id)
-//            } catch (e: IOException) {
-//                _data.postValue(_data.value?.copy(posts = old))
-//            }
-//        }
-
         lastAction = ActionType.REMOVE
         viewModelScope.launch {
             try {
@@ -235,28 +128,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _dataState.value = FeedModelState(error = true)
             }
         }
-//        lastId = id
-//        repository.removeByIdAsync(id, object : PostRepository.SaveRemoveCallback {
-//            override fun onSuccess() {
-//                _data.postValue(
-//                _data.value?.copy(posts = _data.value?.posts.orEmpty()
-//                    .filter { it.id != id }, systemError = false)
-//                )
-//            }
-//
-//            override fun onError(t: Throwable, errorCode: Int) {
-//                if (errorCode != 0 ){
-//                    when (errorCode) {
-//                        in 500..599 -> {
-//                            _data.postValue(FeedModel(systemError = true))
-//                            val posts = _data.value?.posts.orEmpty()
-//                            _data.postValue(FeedModel(posts = posts, systemError = true))
-//                        }
-//                        else -> return
-//                    }
-//                } else _data.postValue(FeedModel(error = true))
-//            }
-//        })
     }
 
     fun retry(){
@@ -284,9 +155,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             removeById(it)
         }
     }
-
-
-
 }
 
 enum class ActionType{

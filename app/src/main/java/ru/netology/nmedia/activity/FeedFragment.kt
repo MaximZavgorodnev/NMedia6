@@ -75,8 +75,6 @@ class FeedFragment : Fragment() {
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()
         }
-
-
         return binding.root
     }
 }
