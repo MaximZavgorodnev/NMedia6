@@ -28,6 +28,7 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
 
     override suspend fun getAll() {
         try {
+            val daoSize = isSize()
             if (memoryPosts.isNotEmpty()) {
                 coroutineScope {
                     memoryPosts.map { post ->
@@ -51,13 +52,12 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            nextId = dao.isSize().toLong()
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             body.filter { post ->
-                post.id > nextId
+                post.id > daoSize
             }
             dao.insert(body.toEntity())
-            if (nextId < 4) {
+            if (daoSize < 6L) {
                 dao.update()
             }
         } catch (e: IOException) {
@@ -69,15 +69,15 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
 
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
+            val daoSize = isSize()
             delay(10_000L)
             val response = PostsApi.service.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            nextId = dao.isSize().toLong()
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             body.filter { post ->
-                post.id > nextId
+                post.id > daoSize
             }
             dao.insert(body.toEntity())
             emit(body.size)
@@ -154,6 +154,10 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
 
     override suspend fun update(){
         dao.update()
+    }
+
+    override suspend fun isSize(): Long {
+        return dao.isSize().toLong()
     }
 
 }

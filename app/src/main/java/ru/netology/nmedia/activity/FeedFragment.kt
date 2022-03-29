@@ -74,6 +74,7 @@ class FeedFragment : Fragment() {
         binding.news.setOnClickListener {
             viewModel.update()
             binding.news.visibility = View.GONE
+            binding.list.smoothScrollToPosition(0)
         }
 
         binding.fab.setOnClickListener {
