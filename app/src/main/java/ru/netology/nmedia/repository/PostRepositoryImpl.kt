@@ -70,7 +70,7 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
             val daoSize = isSize()
-            delay(10_000L)
+            delay(5_000L)
             val response = PostsApi.service.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
