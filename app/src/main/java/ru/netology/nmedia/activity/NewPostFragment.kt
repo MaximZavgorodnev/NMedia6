@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.AndroidUtils
+import ru.netology.nmedia.util.LongArg
 import ru.netology.nmedia.util.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 
@@ -55,4 +56,6 @@ class NewPostFragment : Fragment() {
 
         return binding.root
     }
+
+
 }
