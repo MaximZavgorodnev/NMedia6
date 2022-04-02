@@ -16,7 +16,7 @@ data class PostEntity(
     val published: String,
     val likedByMe: Boolean,
     val likes: Int = 0,
-    val read: Boolean = true,
+    val read: Boolean,
     @Embedded
     val attachment: Attachment? = null,
 
@@ -26,11 +26,16 @@ data class PostEntity(
 
     companion object {
         fun fromDto(dto: Post) =
-            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  dto.read, dto.attachment)
+            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  true, dto.attachment)
+
+        fun fromDtoFlow(dto: Post) =
+            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  false, dto.attachment)
 
     }
 }
 
 fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
 fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
+fun List<Post>.toEntityFlow(): List<PostEntity> = map(PostEntity::fromDtoFlow)
+
 

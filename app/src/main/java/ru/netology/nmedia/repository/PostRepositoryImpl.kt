@@ -12,6 +12,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.toDto
 import ru.netology.nmedia.entity.toEntity
+import ru.netology.nmedia.entity.toEntityFlow
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
@@ -23,12 +24,11 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
     var nextId: Long = 0L
     private val memoryPosts = mutableListOf<Post>()
     override val data = dao.getAll()
-        .map(List<PostEntity>::toDto).asFlow()
+        .map(List<PostEntity>::toDto)
         .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
         try {
-            val daoSize = isSize()
             if (memoryPosts.isNotEmpty()) {
                 coroutineScope {
                     memoryPosts.map { post ->
@@ -53,13 +53,8 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            body.filter { post ->
-                post.id > daoSize
-            }
             dao.insert(body.toEntity())
-            if (daoSize < 6L) {
-                dao.update()
-            }
+
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -69,17 +64,13 @@ class PostRepositoryImpl(private val dao: PostDao): PostRepository {
 
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
-            val daoSize = isSize()
-            delay(5_000L)
+            delay(10_000L)
             val response = PostsApi.service.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            body.filter { post ->
-                post.id > daoSize
-            }
-            dao.insert(body.toEntity())
+            dao.insert(body.toEntityFlow())
             emit(body.size)
         }
     }
