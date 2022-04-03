@@ -30,4 +30,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="sign_out">Sign Out</string>
     <string name="menu_save">Save</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email" translatable="false">Login</string>
+    <string name="prompt_password" translatable="false">Password</string>
 </resources>

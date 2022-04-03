@@ -54,9 +54,6 @@ class FeedFragment : Fragment() {
                 startActivity(shareIntent)
             }
         })
-//        val difference = if (viewModel.data.value != null) {
-//             container?.size!! < viewModel.data.value?.posts!!.size
-//        } else false
 
         binding.list.adapter = adapter
         viewModel.dataState.observe(viewLifecycleOwner) { state ->

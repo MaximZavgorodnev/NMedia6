@@ -9,11 +9,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.viewmodel.AuthViewModel
 
@@ -62,8 +64,11 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val onInteractionListener: OnInteractionListener
         return when (item.itemId) {
             R.id.signin -> {
+//                onInteractionListener.navigate(R.id.action_feedFragment_to_newPostFragment)
+
                 // TODO: just hardcode it, implementation must be in homework
                 AppAuth.getInstance().setAuth(5, "x-token")
                 true
