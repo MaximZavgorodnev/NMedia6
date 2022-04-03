@@ -55,6 +55,7 @@ class FeedFragment : Fragment() {
             }
         })
 
+
         binding.list.adapter = adapter
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading

@@ -64,16 +64,16 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val onInteractionListener: OnInteractionListener
         return when (item.itemId) {
             R.id.signin -> {
 //                onInteractionListener.navigate(R.id.action_feedFragment_to_newPostFragment)
-
+                findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_authenticationFragment)
                 // TODO: just hardcode it, implementation must be in homework
                 AppAuth.getInstance().setAuth(5, "x-token")
                 true
             }
             R.id.signup -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_authenticationFragment)
                 // TODO: just hardcode it, implementation must be in homework
                 AppAuth.getInstance().setAuth(5, "x-token")
                 true

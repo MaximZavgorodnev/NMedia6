@@ -42,9 +42,5 @@
         android:id="@+id/authenticationFragment"
         android:name="ru.netology.nmedia.activity.Dialog.AuthenticationFragment"
         android:label="fragment_authentication"
-        tools:layout="@layout/fragment_authentication" >
-        <action
-            android:id="@+id/action_authenticationFragment_to_feedFragment"
-            app:destination="@id/feedFragment" />
-    </dialog>
+        tools:layout="@layout/fragment_authentication" />
 </navigation>

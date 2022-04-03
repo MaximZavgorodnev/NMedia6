@@ -7,7 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.databinding.FragmentAuthenticationBinding
+import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.util.AndroidUtils
+
 import ru.netology.nmedia.viewmodel.AuthViewModel
 
 
@@ -30,12 +34,16 @@ class AuthenticationFragment : DialogFragment() {
     ): View {
 
         val binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
-        val usernameEditText = binding.username
-        val passwordEditText = binding.password
+
         val enter = binding.enter
 
-        enter.setOnClickListener{
-
+        enter.setOnClickListener {
+            val usernameEditText = binding.username.text.toString()
+            val passwordEditText = binding.password.text.toString()
+            val user = User(usernameEditText, passwordEditText)
+            viewModel.onSignIn(user)
+            AndroidUtils.hideKeyboard(requireView())
+            findNavController().navigateUp()
         }
 
         return binding.root
