@@ -26,4 +26,8 @@
     <string name="error_unknown">error_unknown</string>
     <string name="error_db">error_db</string>
     <string name="news">Recent entries</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="menu_save">Save</string>
 </resources>

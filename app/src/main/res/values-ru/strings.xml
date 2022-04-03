@@ -27,4 +27,8 @@
     <string name="error_unknown">error_unknown</string>
     <string name="error_db">error_db</string>
     <string name="news">Свежие новости</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_out">Выход</string>
+    <string name="menu_save">Сохранить</string>
 </resources>

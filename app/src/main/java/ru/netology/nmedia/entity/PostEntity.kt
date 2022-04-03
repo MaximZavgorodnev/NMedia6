@@ -5,11 +5,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.enumeration.AttachmentType
 
 @Entity
 data class PostEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
+    val authorId: Long,
     val author: String,
     val authorAvatar: String,
     val content: String,
@@ -18,19 +20,30 @@ data class PostEntity(
     val likes: Int = 0,
     val read: Boolean,
     @Embedded
-    val attachment: Attachment? = null,
-
-
-    ) {
-    fun toDto() = Post(id, author, authorAvatar, content, published, likedByMe, likes, read, attachment )
+    var attachment: AttachmentEmbeddable?,
+) {
+    fun toDto() = Post(id, authorId, author, authorAvatar, content, published, likedByMe, likes, read, attachment?.toDto() )
 
     companion object {
         fun fromDto(dto: Post) =
-            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  true, dto.attachment)
+            PostEntity(dto.id, dto.authorId, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  true, AttachmentEmbeddable.fromDto(dto.attachment))
 
         fun fromDtoFlow(dto: Post) =
-            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  false, dto.attachment)
+            PostEntity(dto.id, dto.authorId, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  false, AttachmentEmbeddable.fromDto(dto.attachment))
 
+    }
+}
+
+data class AttachmentEmbeddable(
+    var url: String,
+    var type: AttachmentType,
+) {
+    fun toDto() = Attachment(url, type)
+
+    companion object {
+        fun fromDto(dto: Attachment?) = dto?.let {
+            AttachmentEmbeddable(it.url, it.type)
+        }
     }
 }
 
