@@ -40,7 +40,4 @@ class AuthViewModel : ViewModel() {
 
     }
 
-    fun onSignOut(){
-
-    }
 }

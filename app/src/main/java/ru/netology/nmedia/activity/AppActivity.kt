@@ -75,7 +75,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 true
             }
             R.id.signout -> {
-                // TODO: just hardcode it, implementation must be in homework
                 AppAuth.getInstance().removeAuth()
                 true
             }

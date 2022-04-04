@@ -12,11 +12,7 @@ import ru.netology.nmedia.error.UnknownError
 import java.io.IOException
 
 class UserRepositoryImpl(): UserRepository {
-//    var dataUser = User(
-//        login = "",
-//        password = "")
 
-//    val appAuth = AppAuth(context)
     override suspend fun onSignIn(user: User) {
         try {
             val response = PostsApi.service.onSignIn(user.login, user.password)
@@ -37,7 +33,4 @@ class UserRepositoryImpl(): UserRepository {
         TODO("Not yet implemented")
     }
 
-    override fun onSignOut() {
-        TODO("Not yet implemented")
-    }
 }
