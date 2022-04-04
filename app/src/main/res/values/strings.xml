@@ -41,4 +41,7 @@
     <string name="login_failed" translatable="false">"Login failed"</string>
     <string name="All_fields">All fields are required to be filled in</string>
     <string name="To_continue">To continue, you need to log in</string>
+    <string name="name_user">Name user</string>
+    <string name="repeat_password" translatable="false">Repeat password</string>
+    <string name="password_not_match">Password does not match</string>
 </resources>

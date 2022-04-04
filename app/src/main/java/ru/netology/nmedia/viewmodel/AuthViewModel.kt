@@ -36,8 +36,15 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun onSignUp(user: User){
+    fun onSignUp(loginEditText: String, passwordEditText: String, usernameEditText: String){
+        viewModelScope.launch {
+            try {
+                repositoryUser.onSignUp(loginEditText, passwordEditText, usernameEditText)
+            } catch (e: Exception) {
+                throw UnknownError
+            }
 
+        }
     }
 
 }

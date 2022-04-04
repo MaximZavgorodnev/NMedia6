@@ -34,4 +34,6 @@
     <string name="action_sign_in">Войти в систему</string>
     <string name="All_fields">Все поля обязательны к заполнению</string>
     <string name="To_continue">Для продолжения необходимо войти</string>
+    <string name="name_user">Имя пользователя</string>
+    <string name="password_not_match">Пароль не соответствует</string>
 </resources>
