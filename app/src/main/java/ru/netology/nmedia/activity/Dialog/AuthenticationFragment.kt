@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentAuthenticationBinding
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.util.AndroidUtils
@@ -16,12 +18,6 @@ import ru.netology.nmedia.viewmodel.AuthViewModel
 
 
 class AuthenticationFragment : DialogFragment() {
-
-//    private lateinit var loginViewModel: LoginViewModel
-//    private var _binding: FragmentAuthenticationBinding? = null
-//
-//
-//    private val binding get() = _binding!!
 
     private val viewModel: AuthViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -40,17 +36,20 @@ class AuthenticationFragment : DialogFragment() {
         enter.setOnClickListener {
             val usernameEditText = binding.username.text.toString()
             val passwordEditText = binding.password.text.toString()
-            val user = User(usernameEditText, passwordEditText)
-            viewModel.onSignIn(user)
-            AndroidUtils.hideKeyboard(requireView())
-            findNavController().navigateUp()
+            if (usernameEditText=="" || passwordEditText==""){
+                Snackbar.make(binding.root, R.string.All_fields, Snackbar.LENGTH_SHORT).show()
+            } else {
+                val user = User(usernameEditText, passwordEditText)
+                viewModel.onSignIn(user)
+                AndroidUtils.hideKeyboard(requireView())
+                findNavController().navigateUp()
+            }
         }
 
         return binding.root
 
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
 

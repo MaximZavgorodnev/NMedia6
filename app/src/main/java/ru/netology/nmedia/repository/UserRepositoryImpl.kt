@@ -23,14 +23,9 @@ class UserRepositoryImpl(): UserRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            val authState = response.body()
-
-
-//            AppAuth.setAuth(authState.id, authState.token)
-
-//            instance = response.body()
-
-
+            val authState = response.body() ?: throw ApiError(response.code(), response.message())
+            val token = authState.token ?: throw UnknownError
+            AppAuth.getInstance().setAuth(authState.id, token)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
