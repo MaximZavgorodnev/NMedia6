@@ -1,6 +1,7 @@
 package ru.netology.nmedia.viewmodel
 
 import android.app.Application
+import androidx.activity.viewModels
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -57,6 +58,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             .catch { e -> e.printStackTrace() }
             .asLiveData(Dispatchers.Default)
     }
+
+
 
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
@@ -117,7 +120,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun edit(post: Post) {
-        edited.value = post
+            edited.value = post
     }
 
     fun changeContent(content: String) {

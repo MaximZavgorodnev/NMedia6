@@ -33,4 +33,5 @@
     <string name="menu_save">Сохранить</string>
     <string name="action_sign_in">Войти в систему</string>
     <string name="All_fields">Все поля обязательны к заполнению</string>
+    <string name="To_continue">Для продолжения необходимо войти</string>
 </resources>

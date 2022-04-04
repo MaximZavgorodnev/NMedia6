@@ -9,18 +9,23 @@ import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
+@ExperimentalCoroutinesApi
 class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,11 +36,20 @@ class FeedFragment : Fragment() {
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
-                viewModel.edit(post)
+                if (authViewModel.authenticated) {
+                    viewModel.edit(post)
+                } else {
+                    Snackbar.make(binding.root, R.string.To_continue, Snackbar.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_feedFragment_to_authenticationFragment)
+                }
             }
-
             override fun onLike(post: Post) {
-                if (!post.likedByMe) viewModel.likeById(post.id) else viewModel.disLikeById(post.id)
+                if (authViewModel.authenticated) {
+                    if (!post.likedByMe) viewModel.likeById(post.id) else viewModel.disLikeById(post.id)
+                } else {
+                    Snackbar.make(binding.root, R.string.To_continue, Snackbar.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_feedFragment_to_authenticationFragment)
+                }
             }
 
             override fun onRemove(post: Post) {
@@ -43,15 +57,20 @@ class FeedFragment : Fragment() {
             }
 
             override fun onShare(post: Post) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
-                }
+                if (authViewModel.authenticated) {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, post.content)
+                        type = "text/plain"
+                    }
 
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                    startActivity(shareIntent)
+                } else {
+                    Snackbar.make(binding.root, R.string.To_continue, Snackbar.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_feedFragment_to_authenticationFragment)
+                }
             }
         })
 
