@@ -39,7 +39,7 @@ private val retrofit = Retrofit.Builder()
     .client(okhttp)
     .build()
 
-interface PostsApiService {
+interface ApiService {
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
 
@@ -74,8 +74,8 @@ interface PostsApiService {
 
 }
 
-object PostsApi {
-    val service: PostsApiService by lazy {
-        retrofit.create(PostsApiService::class.java)
+object Api {
+    val service: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
     }
 }
