@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.dto.PushToken
 
@@ -42,6 +43,7 @@ class AppAuth private constructor(context: Context) {
             putString(tokenKey, token)
             apply()
         }
+        sendPushToken()
     }
 
     @Synchronized
@@ -51,6 +53,7 @@ class AppAuth private constructor(context: Context) {
             clear()
             commit()
         }
+        sendPushToken()
     }
 
     fun sendPushToken(token: String? = null) {
