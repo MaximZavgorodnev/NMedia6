@@ -78,22 +78,6 @@ class AppAuth @Inject constructor(
         }
     }
 
-//    companion object {
-//        @Volatile
-//        private var instance: AppAuth? = null
-//
-//        fun getInstance(): AppAuth = synchronized(this) {
-//            instance ?: throw IllegalStateException(
-//                "AppAuth is not initialized, you must call AppAuth.initializeApp(Context context) first."
-//            )
-//        }
-//
-//        fun initApp(context: Context): AppAuth = instance ?: synchronized(this) {
-//            instance ?: buildAuth(context).also { instance = it }
-//        }
-//
-//        private fun buildAuth(context: Context): AppAuth = AppAuth(context)
-//    }
 }
 
 data class AuthState(val id: Long = 0, val token: String? = null)

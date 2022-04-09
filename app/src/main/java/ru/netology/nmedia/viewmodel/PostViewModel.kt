@@ -39,9 +39,6 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth
     ) : ViewModel() {
-//    private val repository: PostRepository =
-//        PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
-
     val data: LiveData<FeedModel> = appAuth
         .authStateFlow
         .flatMapLatest { (myId, _) ->
