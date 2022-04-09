@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
@@ -12,16 +13,21 @@ import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.error.UnknownError
 import ru.netology.nmedia.repository.UserRepository
 import ru.netology.nmedia.repository.UserRepositoryImpl
+import javax.inject.Inject
 
 
-class AuthViewModel : ViewModel() {
-    val data: LiveData<AuthState> = AppAuth.getInstance()
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private  val appAuth: AppAuth,
+    private val repositoryUser : UserRepository
+) : ViewModel() {
+    val data: LiveData<AuthState> = appAuth
         .authStateFlow
         .asLiveData(Dispatchers.Default)
     val authenticated: Boolean
-        get() = AppAuth.getInstance().authStateFlow.value.id != 0L
+        get() = appAuth.authStateFlow.value.id != 0L
 
-    private val repositoryUser : UserRepository = UserRepositoryImpl()
+
 
 
     fun onSignIn(user: User){

@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentDisplayingImagesBinding
 import ru.netology.nmedia.util.LongArg
 import ru.netology.nmedia.util.StringArg
 
+@AndroidEntryPoint
 class DisplayingImagesFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
