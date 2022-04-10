@@ -50,4 +50,10 @@ interface ApiService {
         @Path("id") id: Long,
         @Query("count") count: Int
     ): Response<List<Post>>
+
+    @GET("posts/{id}/before")
+    suspend fun getAfter(
+        @Path("id") id: Long,
+        @Query("count") count: Int
+    ): Response<List<Post>>
 }
