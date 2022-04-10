@@ -56,45 +56,12 @@ class PostViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-//    val newerCount: LiveData<Int> = data.switchMap {
-//        repository.getNewerCount(
-//            it.posts.firstOrNull()?.id ?: 0L)
-//            .catch { e -> e.printStackTrace() }
-//            .asLiveData(Dispatchers.Default)
-//    }
-
-
-
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
     var lastAction: ActionType? = null
     var lastId = 0L
-
-//    init {
-//        loadPosts()
-//    }
-//
-//    fun loadPosts() = viewModelScope.launch {
-//        try {
-//            _dataState.value = FeedModelState(loading = true)
-//            repository.getAll()
-//            _dataState.value = FeedModelState()
-//        } catch (e: Exception) {
-//            _dataState.value = FeedModelState(error = true)
-//        }
-//    }
-//
-//    fun refreshPosts() = viewModelScope.launch {
-//        try {
-//            _dataState.value = FeedModelState(refreshing = true)
-//            repository.getAll()
-//            _dataState.value = FeedModelState()
-//        } catch (e: Exception) {
-//            _dataState.value = FeedModelState(error = true)
-//        }
-//    }
 
     fun update() = viewModelScope.launch {
         try {

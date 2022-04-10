@@ -102,20 +102,6 @@ class FeedFragment : Fragment() {
                             it.prepend is LoadState.Loading
             }
         }
-//        viewModel.data.observe(viewLifecycleOwner) { state ->
-//            val isNewPost = (adapter.itemCount < state.posts.size) && (adapter.itemCount > 0)
-//            adapter.submitList(state.posts) {
-//                if (isNewPost) {
-//                    binding.list.smoothScrollToPosition(0)
-//                }
-//                binding.emptyText.isVisible = state.empty
-//            }
-//        }
-
-
-//        viewModel.newerCount.observe(viewLifecycleOwner) { state ->
-//                binding.news.visibility = View.VISIBLE
-//        }
 
         binding.news.setOnClickListener {
             viewModel.update()
