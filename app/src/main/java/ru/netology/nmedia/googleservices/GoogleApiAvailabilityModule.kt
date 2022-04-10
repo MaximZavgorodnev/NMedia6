@@ -1,4 +1,4 @@
-package ru.netology.nmedia.objectActivity
+package ru.netology.nmedia.googleservices
 
 import com.google.android.gms.common.GoogleApiAvailability
 import dagger.Module

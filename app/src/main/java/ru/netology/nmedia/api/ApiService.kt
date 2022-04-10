@@ -6,30 +6,6 @@ import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.PushToken
 
-//
-//private const val BASE_URL = "${BuildConfig.BASE_URL}/api/slow/"
-
-//private val logging = HttpLoggingInterceptor().apply {
-//    if (BuildConfig.DEBUG) {
-//        level = HttpLoggingInterceptor.Level.BODY
-//    }
-//}  //
-//
-//private val okhttp = OkHttpClient.Builder()
-//    .addInterceptor(logging)
-//    .addInterceptor { chain ->
-//        AppAuth.getInstance().authStateFlow.value.token?.let { token ->
-//            val newRequest = chain.request().newBuilder()
-//                .addHeader("Authorization", token)
-//                .build()
-//            return@addInterceptor chain.proceed(newRequest)
-//        }
-//        chain.proceed(chain.request())
-//    }
-//    .build()///
-//
-
-
 interface ApiService {
     @POST("users/push-tokens")
     suspend fun save(@Body pushToken: PushToken): Response<Unit>
@@ -66,10 +42,12 @@ interface ApiService {
                          @Field("pass") pass: String,
                          @Field("name") name: String): Response<AuthState>
 
+    @GET("posts/latest")
+    suspend fun getLatest(@Query("count") count: Int): Response<List<Post>>
+
+    @GET("posts/{id}/before")
+    suspend fun getBefore(
+        @Path("id") id: Long,
+        @Query("count") count: Int
+    ): Response<List<Post>>
 }
-//
-//object Api {
-//    val service: ApiService by lazy {
-//        retrofit.create(ApiService::class.java)
-//    }
-//}
