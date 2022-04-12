@@ -48,15 +48,22 @@ class PostRemoteMediator @Inject constructor(
 //        }
         try {
             val response = when (loadType) {
-                LoadType.REFRESH -> apiService.getLatest(state.config.initialLoadSize)
+                LoadType.REFRESH -> {
+                    if (postDao.isEmpty()){
+                        apiService.getLatest(state.config.pageSize)
+                    } else {
+                        val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(
+                            endOfPaginationReached = false
+                         )
+                        apiService.getBefore(id, state.config.pageSize)
+                    }
+                }
                 LoadType.PREPEND -> null
 //                {
 //                    val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(
 //                        endOfPaginationReached = false
 //                    )
 //                    apiService.getAfter(id, state.config.pageSize)
-//
-//                    apiService.getLatest(state.config.pageSize)
 //                }
                 LoadType.APPEND -> {
                     val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
