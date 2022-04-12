@@ -22,30 +22,6 @@ class PostRemoteMediator @Inject constructor(
     ): RemoteMediator<Int, PostEntity>() {
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, PostEntity>): MediatorResult {
-//        try {
-//            val response = when (loadType) {
-//                LoadType.REFRESH -> apiService.getLatest(state.config.initialLoadSize)
-//                LoadType.PREPEND -> {
-//                    val firstId = state.lastItemOrNull()?.id ?: return MediatorResult.Success( false)
-//                    apiService.getAfter(firstId, state.config.initialLoadSize)
-//                }
-//                LoadType.APPEND -> {
-//                    val lastId = state.lastItemOrNull()?.id ?: return MediatorResult.Success( false)
-//                    apiService.getBefore(lastId, state.config.initialLoadSize)
-//                }
-//
-//            }
-//            if (!response.isSuccessful) {
-//                throw ApiError(response.code(), response.message())
-//            }
-//            val body = response.body() ?: throw ApiError(
-//                response.code(),
-//                response.message(),
-//            )
-//
-//            postDao.insert(body.map(PostEntity::fromDto))
-//            return MediatorResult.Success(body.isEmpty())
-//        }
         try {
             val response = when (loadType) {
                 LoadType.REFRESH -> {
@@ -59,12 +35,6 @@ class PostRemoteMediator @Inject constructor(
                     }
                 }
                 LoadType.PREPEND -> null
-//                {
-//                    val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(
-//                        endOfPaginationReached = false
-//                    )
-//                    apiService.getAfter(id, state.config.pageSize)
-//                }
                 LoadType.APPEND -> {
                     val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
                         endOfPaginationReached = false
@@ -98,7 +68,6 @@ class PostRemoteMediator @Inject constructor(
                                     ),
                                 )
                             )
-//                            postDao.removeAll()
                         }
                         LoadType.PREPEND -> {
                             postRemoteKeyDao.insert(
