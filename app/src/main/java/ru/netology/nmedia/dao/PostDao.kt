@@ -1,6 +1,7 @@
 package ru.netology.nmedia.dao
 
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.entity.PostEntity
@@ -9,7 +10,7 @@ import ru.netology.nmedia.enumeration.AttachmentType
 @Dao
 interface PostDao {
     @Query("SELECT * FROM PostEntity WHERE read <> 0 ORDER BY id DESC")
-    fun getAll(): Flow<List<PostEntity>>
+    fun getAll(): PagingSource<Int, PostEntity>
 
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean
@@ -28,6 +29,9 @@ interface PostDao {
 
     @Query("SELECT COUNT() FROM PostEntity")
     suspend fun isSize(): Int
+
+    @Query("DELETE FROM PostEntity")
+    suspend fun removeAll()
 }
 
 class Converters {

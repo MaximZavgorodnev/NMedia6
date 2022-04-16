@@ -1,11 +1,11 @@
 package ru.netology.nmedia.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
+import androidx.paging.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
 import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Post
@@ -21,17 +21,21 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
+@OptIn(ExperimentalPagingApi::class)
 class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
     private val apiService: ApiService,
-    private val postPagingSource: Provider<PostPagingSource>
+    private val mediator: PostRemoteMediator
 ): PostRepository {
     var nextId: Long = 0L
     private val memoryPosts = mutableListOf<Post>()
-    override val data = Pager(
-        PagingConfig(pageSize = 10, enablePlaceholders = false),
-        pagingSourceFactory = {postPagingSource.get()}
-    ).flow.flowOn(Dispatchers.Default)
+    override val data: Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+        pagingSourceFactory = {dao.getAll()},
+        remoteMediator = mediator
+    ).flow.map{
+        it.map(PostEntity::toDto)
+    }
 
     override suspend fun getAll() {
         try {
