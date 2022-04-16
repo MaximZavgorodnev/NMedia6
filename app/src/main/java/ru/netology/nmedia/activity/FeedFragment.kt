@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PagingLoadStateAdapter
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
@@ -80,10 +79,21 @@ class FeedFragment : Fragment() {
         })
 
 
-        binding.list.adapter = adapter
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PagingLoadStateAdapter(object : PagingLoadStateAdapter.OnInteractionListener {
+                override fun onRetry() {
+                    adapter.retry()
+                }
+            }),
+            footer = PagingLoadStateAdapter(object : PagingLoadStateAdapter.OnInteractionListener {
+                override fun onRetry() {
+                    adapter.retry()
+                }
+            }),
+        )
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
-            binding.swiperefresh.isRefreshing = state.refreshing
+//            binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.retry_loading) { viewModel.retry() }
@@ -96,10 +106,7 @@ class FeedFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest {
-                binding.swiperefresh.isRefreshing =
-                            it.refresh is LoadState.Loading ||
-                            it.append is LoadState.Loading ||
-                            it.prepend is LoadState.Loading
+                binding.swiperefresh.isRefreshing = it.refresh is LoadState.Loading
             }
         }
 
