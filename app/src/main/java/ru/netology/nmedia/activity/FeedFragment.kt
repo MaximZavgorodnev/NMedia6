@@ -93,7 +93,6 @@ class FeedFragment : Fragment() {
         )
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
-//            binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.retry_loading) { viewModel.retry() }
