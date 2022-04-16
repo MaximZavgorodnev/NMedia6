@@ -43,7 +43,6 @@ class PostRemoteMediator @Inject constructor(
                 }
             }
             if (response != null) {
-
                 if (!response.isSuccessful) {
                     throw ApiError(response.code(), response.message())
                 }
@@ -55,19 +54,27 @@ class PostRemoteMediator @Inject constructor(
                 db.withTransaction {
                     when (loadType) {
                         LoadType.REFRESH -> {
-                            postRemoteKeyDao.removeAll()
-                            postRemoteKeyDao.insert(
-                                listOf(
+                            if (postRemoteKeyDao.isEmpty()) {
+                                postRemoteKeyDao.insert(
+                                    listOf(
+                                        PostRemoteKeyEntity(
+                                            type = PostRemoteKeyEntity.KeyType.AFTER,
+                                            id = body.first().id,
+                                        ),
+                                        PostRemoteKeyEntity(
+                                            type = PostRemoteKeyEntity.KeyType.BEFORE,
+                                            id = body.last().id,
+                                        ),
+                                    )
+                                )
+                            } else {
+                                postRemoteKeyDao.insert(
                                     PostRemoteKeyEntity(
                                         type = PostRemoteKeyEntity.KeyType.AFTER,
                                         id = body.first().id,
-                                    ),
-                                    PostRemoteKeyEntity(
-                                        type = PostRemoteKeyEntity.KeyType.BEFORE,
-                                        id = body.last().id,
-                                    ),
+                                    )
                                 )
-                            )
+                            }
                         }
                         LoadType.PREPEND -> {
                             postRemoteKeyDao.insert(
